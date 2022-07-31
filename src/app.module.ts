@@ -24,6 +24,7 @@ import { Users } from './users/entities/user.entity';
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
+        TOKEN_SECRET: Joi.string().required(),
       }),
     }),
     GraphQLModule.forRoot({
