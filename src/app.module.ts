@@ -14,6 +14,7 @@ import { CommonModule } from './common/common.module';
 import { Users } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -52,7 +53,6 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
       entities: [Users],
     }),
     UsersModule,
-    CommonModule,
     JwtModule.forRoot({ tokenKey: process.env.TOKEN_SECRET }),
   ],
   controllers: [],
