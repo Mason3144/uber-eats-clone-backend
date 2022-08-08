@@ -9,11 +9,14 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from 'src/jwt/jwt.service';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { DeleteAccountInput } from './dtos/delete-account.dto';
+import { Verifications } from './entities/verification.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users) private readonly users: Repository<Users>,
+    @InjectRepository(Verifications)
+    private readonly verifications: Repository<Verifications>,
     private readonly jwtService: JwtService,
   ) {}
   async createAccount({
@@ -26,7 +29,14 @@ export class UsersService {
       if (exists) {
         return { ok: false, error: 'The email is already taken' };
       }
-      await this.users.save(this.users.create({ email, password, role }));
+      const user = await this.users.save(
+        this.users.create({ email, password, role }),
+      );
+      await this.verifications.save(
+        this.verifications.create({
+          user,
+        }),
+      );
       return { ok: true };
     } catch (e) {
       return { ok: false, error: `Couldn't create account, ${e} ` };
@@ -69,6 +79,8 @@ export class UsersService {
     const user = await this.users.findOne({ where: { id } });
     if (email) {
       user.email = email;
+      user.verified = false;
+      await this.verifications.save(this.verifications.create({ user }));
     }
     if (password) {
       user.password = password;

@@ -15,6 +15,7 @@ import { Users } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
+import { Verifications } from './users/entities/verification.entity';
 
 @Module({
   imports: [
@@ -50,7 +51,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_DATABASE,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: true,
-      entities: [Users],
+      entities: [Users, Verifications],
     }),
     UsersModule,
     JwtModule.forRoot({ tokenKey: process.env.TOKEN_SECRET }),
