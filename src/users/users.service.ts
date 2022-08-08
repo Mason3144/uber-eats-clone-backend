@@ -7,6 +7,7 @@ import { Users } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from 'src/jwt/jwt.service';
+import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -58,5 +59,21 @@ export class UsersService {
 
   async findById(id: number): Promise<Users> {
     return this.users.findOne({ where: { id } });
+  }
+
+  async editProfile(
+    id: number,
+    { email, password }: EditProfileInput,
+  ): Promise<Users> {
+    const user = await this.users.findOne({ where: { id } });
+    if (email) {
+      user.email = email;
+    }
+    if (password) {
+      user.password = password;
+    }
+    return this.users.save(user);
+    // userID is in @AuthUser used in user.resolver
+    // {...editProfileInput} activate only changed values in an object
   }
 }
