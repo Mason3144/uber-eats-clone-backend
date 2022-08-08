@@ -6,6 +6,10 @@ import {
   CreateAccountInput,
   CreateAccountOutput,
 } from './dtos/create-account.dto';
+import {
+  DeleteAccountInput,
+  DeleteAccountOutput,
+} from './dtos/delete-account.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
@@ -78,6 +82,19 @@ export class UsersResolver {
     try {
       await this.usersService.editProfile(authUser.id, editProfileInput);
       return { ok: true };
+    } catch (error) {
+      return { ok: false, error };
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation((returns) => DeleteAccountOutput)
+  async deleteAccount(
+    @AuthUser() authUser: Users,
+    @Args('input') deleteAccountInput: DeleteAccountInput,
+  ): Promise<DeleteAccountOutput> {
+    try {
+      return this.usersService.deleteAccount(authUser.id, deleteAccountInput);
     } catch (error) {
       return { ok: false, error };
     }

@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from 'src/jwt/jwt.service';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
+import { DeleteAccountInput } from './dtos/delete-account.dto';
 
 @Injectable()
 export class UsersService {
@@ -75,5 +76,21 @@ export class UsersService {
     return this.users.save(user);
     // userID is in @AuthUser used in user.resolver
     // {...editProfileInput} activate only changed values in an object
+  }
+  async deleteAccount(
+    id: number,
+    { password }: DeleteAccountInput,
+  ): Promise<{ ok: boolean; error?: string }> {
+    try {
+      const user = await this.users.findOne({ where: { id } });
+      const checkPassword = await user.checkPassword(password);
+      if (!checkPassword) {
+        return { ok: false, error: "This password doesn't match. Try again" };
+      }
+      await this.users.remove(user);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error };
+    }
   }
 }
