@@ -14,7 +14,7 @@ export class Verifications extends CoreEntity {
 
   //One to One relationship, one user can have one verification and one verification can have one user as well.
   //One to Many relationship, one user can have many restaurants or one post can have many likes, for example
-  @OneToOne((type) => Users)
+  @OneToOne((type) => Users, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: Users;
 
