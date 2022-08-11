@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RelationId, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   CreateAccountInput,
   CreateAccountOutput,
@@ -11,7 +11,10 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from 'src/jwt/jwt.service';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
-import { DeleteAccountInput } from './dtos/delete-account.dto';
+import {
+  DeleteAccountInput,
+  DeleteAccountOutput,
+} from './dtos/delete-account.dto';
 import { Verifications } from './entities/verification.entity';
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { VerifyEmailOutput } from './dtos/verify-email.dto';
@@ -112,7 +115,7 @@ export class UsersService {
   async deleteAccount(
     id: number,
     { password }: DeleteAccountInput,
-  ): Promise<{ ok: boolean; error?: string }> {
+  ): Promise<DeleteAccountOutput> {
     try {
       const user = await this.users.findOne({ where: { id } });
       const checkPassword = await user.checkPassword(password);
@@ -134,7 +137,8 @@ export class UsersService {
       });
       if (verification) {
         verification.user.verified = true;
-        this.users.save(verification.user);
+        await this.users.save(verification.user);
+        await this.verifications.delete(verification.id);
         return { ok: true };
       }
       return { ok: false, error: 'Verification not found' };
