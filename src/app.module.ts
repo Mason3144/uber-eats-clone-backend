@@ -16,6 +16,7 @@ import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
 import { Verifications } from './users/entities/verification.entity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -34,6 +35,9 @@ import { Verifications } from './users/entities/verification.entity';
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
         TOKEN_SECRET: Joi.string().required(),
+        MAIKGUN_API_KEY: Joi.string().required(),
+        MAILGUN_FROM_EMAIL: Joi.string().required(),
+        MAILGUN_DOMAIN_NAME: Joi.string().required(),
       }),
     }),
     GraphQLModule.forRoot({
@@ -55,6 +59,11 @@ import { Verifications } from './users/entities/verification.entity';
     }),
     UsersModule,
     JwtModule.forRoot({ tokenKey: process.env.TOKEN_SECRET }),
+    MailModule.forRoot({
+      apiKey: process.env.MAIKGUN_API_KEY,
+      fromEmail: process.env.MAILGUN_FROM_EMAIL,
+      domain: process.env.MAILGUN_DOMAIN_NAME,
+    }),
   ],
   controllers: [],
   providers: [],
