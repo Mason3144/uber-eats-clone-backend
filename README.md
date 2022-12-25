@@ -1,3 +1,3 @@
-#Uber Eats Clone
+# Nest.js와 GraphQL을 이용한 Uber Eats 클론 코딩
 
-The Backend of Uber Eats Clone
+- Not done yet (temporary closed)
